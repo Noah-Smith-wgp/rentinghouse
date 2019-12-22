@@ -1,6 +1,6 @@
 from django.contrib.auth.backends import ModelBackend
 
-from users.models import User
+from apps.users.models import User
 
 
 def get_user_by_account(account):

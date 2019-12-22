@@ -1,6 +1,6 @@
 from django.db.models import Q
 
-from order.models import Order
+from apps.orders.models import Order
 from utils.model import BaseModel
 from django.db import models
 from django.conf import settings
