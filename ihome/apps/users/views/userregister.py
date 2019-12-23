@@ -19,7 +19,6 @@ class UserRegister(View):
         phonecode = json_dict.get('phonecode')
         mobile = json_dict.get('mobile')
         password = json_dict.get('password')
-
         redis_conn = get_redis_connection('verify_code')
         sms_code_server = redis_conn.get('sms_%s' % mobile)
         if sms_code_server is None:
