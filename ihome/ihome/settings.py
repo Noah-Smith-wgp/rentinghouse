@@ -26,6 +26,38 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = (
+    'http://127.0.0.1:8080',
+    'http://127.0.0.1:8000',
+)
+
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+    'VIEW',
+)
+
+CORS_ALLOW_HEADERS = (
+    'XMLHttpRequest',
+    'X_FILENAME',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'Pragma',
+)
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -35,15 +67,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'corsheaders',
+
     'apps.users',
     'apps.homes',
     'apps.orders',
     'apps.verifications',
-    'corsheaders',
 
 ]
 
 MIDDLEWARE = [
+    # CORS需放在最上方
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -89,16 +125,30 @@ DATABASES = {
 
 
 CACHES = {
-    "default": { # 默认
+    "default": {  # 默认
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://49.232.164.126:6379/0",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
-    "session": { # session
+    "session": {  # session
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://49.232.164.126:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
+    "verify_code": {  # 验证码
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://49.232.164.126:6379/2",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
+    "house_cache": {  # 缓存房间数据
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://49.232.164.126:6379/3",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -172,10 +222,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
+# LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-hans'
+# TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 USE_I18N = True
 
 USE_L10N = True
@@ -187,4 +237,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 # 配置静态文件加载路径
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+# 添加用户认证登录
+AUTHENTICATION_BACKENDS = ['utils.check_account.UsernameMobileAuthBackend']
+
