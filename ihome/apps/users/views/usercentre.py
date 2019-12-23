@@ -1,3 +1,4 @@
+import json
 import random
 
 import qiniu
@@ -41,3 +42,11 @@ class UserImage(View):
             "avatar_url": settings.QINIU_URL + url
         }
         return JsonResponse({"data": data, "errno": "0", "errmsg": "头像上传成功"})
+
+
+class UserName(View):
+    def put(self, request):
+        name = json.loads(request.body.decode())
+        username = request.user
+        User.objects.filter(username=str(username)).update(username=name.get("name"))
+        return JsonResponse({"errno": "0", "errmsg": "修改成功"})
