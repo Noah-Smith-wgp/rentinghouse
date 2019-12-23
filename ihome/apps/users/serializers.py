@@ -7,4 +7,4 @@ class UserInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['mobile','password']
+        fields = '__all__'

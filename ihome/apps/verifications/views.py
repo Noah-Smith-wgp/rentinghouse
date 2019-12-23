@@ -49,7 +49,6 @@ class SmsCode(View):
         image_code_server = image_code_server.decode()  # bytes转字符串
         if text.lower() != image_code_server.lower():  # 转小写后比较
             return http.JsonResponse({'code': 4004, 'errmsg': '输入图形验证码有误'})
-
         # 生成短信验证码：生成6位数验证码
         sms_code = '%06d' % random.randint(0, 999999)
         print("短信验证码是:", sms_code)
