@@ -18,6 +18,5 @@ def Sms_txy(mobile,datas):
     # 创建对象
     ssender = qcloudsms.SmsSingleSender()
     # 发送短信
-    result = ssender.send_with_param(86, phone_numbers[0],template_id, params, sign=sms_sign, extend="", ext="")
-    print(result)
+    ssender.send_with_param(86, phone_numbers[0],template_id, params, sign=sms_sign, extend="", ext="")
 
