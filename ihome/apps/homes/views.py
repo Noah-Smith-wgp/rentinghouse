@@ -1,8 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 
-from apps.homes.models import Area
-from apps.homes.serializers import AreaSerializer
+from apps.homes.models import Area, House
+from apps.homes.serializers import AreaSerializer, HouseSerializer
 from utils.response_code import RET
 
 
@@ -26,4 +27,24 @@ class AreaAPIView(APIView):
             "errmsg": '获取成功',
             "errno": RET.OK,
             "data": data_list
+        })
+
+
+# 发布房源
+class HouseAPIView(ModelViewSet):
+
+    serializer_class = HouseSerializer
+    queryset = House.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response({
+            'errmsg': '发布成功',
+            'errno': RET.OK,
+            'data': {
+                'house_id': serializer.data.get('id')
+            }
         })
