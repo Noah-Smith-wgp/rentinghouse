@@ -19,4 +19,5 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/v1.0/', include('apps.verifications.urls')),
+    url(r'^api/v1.0/', include('apps.users.urls')),
 ]

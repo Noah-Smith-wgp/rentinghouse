@@ -1,3 +1,6 @@
+import json
+import re
+
 from django import http
 from django.shortcuts import render
 
@@ -19,4 +22,3 @@ class UserImagesCode(View):
         redis_conn.setex('img_%s' % cul, 3600, text)
         # 响应图形验证码
         return http.HttpResponse(image, content_type='image/jpg')
-
