@@ -10,6 +10,8 @@ urlpatterns = [
     url(r'^users$', userregister.UserRegister.as_view(), name='users'),
     # 用户中心
     url(r'^user$', usercentre.UserCenter.as_view(), name='user'),
+    # 用户头像
+    url(r'^user/avatar$', usercentre.UserImage.as_view(), name='user_image'),
 ]
 
 # from rest_framework import routers

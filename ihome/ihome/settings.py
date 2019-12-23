@@ -204,3 +204,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 # 配置静态文件加载路径
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+QINIU_URL = 'https://www.mourner.xyz:8888'
