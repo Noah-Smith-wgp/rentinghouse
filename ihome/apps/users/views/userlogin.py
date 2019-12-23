@@ -11,23 +11,6 @@ from apps.users.serializers import UserInfoSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-'''
-// 已登录：
-{
-    "errno": "0",
-    "errmsg": "已登录",
-    "data": {
-        "name": "用户名"
-    }
-}
-// 未登录：
-{
-    "errno": "4101",
-    "errmsg": "未登录"
-}
-'''
-
-
 class UserLogin(View):
     def get(self, request):
         user = request.user
@@ -53,9 +36,6 @@ class UserLogin(View):
         return http.JsonResponse({
             "errno": "0",
             "errmsg": "登录成功",
-            "data": {
-                "name": user.username
-            }
         })
 
     def delete(self, request):
