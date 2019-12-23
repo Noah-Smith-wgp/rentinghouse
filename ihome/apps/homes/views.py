@@ -1,10 +1,12 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from django.conf import settings
 
-from apps.homes.models import Area, House
-from apps.homes.serializers import AreaSerializer, HouseSerializer
+from apps.homes.models import Area, House, HouseImage
+from apps.homes.serializers import AreaSerializer, HouseSerializer, HouseImageSerializer
 from utils.response_code import RET
+from utils.qiniu import qiniu_upload
 
 
 # 查询城区列表
@@ -46,5 +48,29 @@ class HouseAPIView(ModelViewSet):
             'errno': RET.OK,
             'data': {
                 'house_id': serializer.data.get('id')
+            }
+        })
+
+
+# 上传房源图片
+class HouseImageView(ModelViewSet):
+
+    serializer_class = HouseImageSerializer
+    queryset = HouseImage.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        image = request.FILES.get('house_image')
+        house_id = kwargs.get('house_id')
+        key = qiniu_upload(image.read())
+        house = House.objects.get(id=house_id)
+        house.index_image_url = key
+        house.save()
+        HouseImage.objects.create(house_id=house_id, url=key)
+
+        return Response({
+            'errmsg':'图片上传成功',
+            'errno':RET.OK,
+            'data':{
+                'url':settings.QINIU_URL + key
             }
         })

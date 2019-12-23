@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.homes.models import Area, House
+from apps.homes.models import Area, House, HouseImage
 
 
 # 查询城区列表
@@ -21,4 +21,12 @@ class HouseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = House
+        fields = '__all__'
+
+
+# 上传房源图片
+class HouseImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = HouseImage
         fields = '__all__'

@@ -9,5 +9,10 @@ urlpatterns = [
 ]
 
 router = DefaultRouter()
+# 发布房源
 router.register(r'houses', views.HouseAPIView, basename='houses')
+urlpatterns += router.urls
+
+# 上传房源图片
+router.register(r'houses/(?P<house_id>\d+)/images', views.HouseImageView, basename='images')
 urlpatterns += router.urls

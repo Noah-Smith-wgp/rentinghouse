@@ -237,8 +237,17 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 # 配置静态文件加载路径
-# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 # 添加用户认证登录
 AUTHENTICATION_BACKENDS = ['utils.check_account.UsernameMobileAuthBackend']
 
+# 七牛云
+QINIU_URL= "http://pzjstxvsp.bkt.clouddn.com/"
+
+# Access Key 和 Secret Key
+QINIU_ACCESS_KEY = 'q9crPZPROOXrykaH85q_zpEEll0f_LsjXwUnXHRo'
+QINIU_SECRET_KEY = 'lG_4_tI8bJTR8Zk6z8fGwYp79aQHkJgolvvBL_qm'
+
+# 要上传的空间
+QINIU_BUCKET_NAME = 'tbdzufang'
