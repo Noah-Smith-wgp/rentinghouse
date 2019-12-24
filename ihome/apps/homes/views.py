@@ -74,3 +74,14 @@ class HouseImageView(ModelViewSet):
                 'url':settings.QINIU_URL + key
             }
         })
+
+
+# 我的房屋列表
+class HouseListView(APIView):
+
+    def get(self, request):
+
+        user = request.user
+        user = House.objects.get(user=user.username)
+        data = House.to_basic_dict(user)
+        return Response({'errmsg':'OK','errno': RET.OK,'data':data })

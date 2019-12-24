@@ -6,6 +6,7 @@ from apps.homes import views
 urlpatterns = [
     url(r'^areas/$', views.AreaAPIView.as_view()),
     # url(r'^houses/$', views.HouseAPIView.as_view()),
+    url(r'^user/houses/$', views.HouseListView.as_view()),
 ]
 
 router = DefaultRouter()
