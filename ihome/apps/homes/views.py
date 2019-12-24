@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -5,6 +6,7 @@ from django.conf import settings
 
 from apps.homes.models import Area, House, HouseImage
 from apps.homes.serializers import AreaSerializer, HouseSerializer, HouseImageSerializer
+from utils import constants
 from utils.response_code import RET
 from utils.qiniu import qiniu_upload
 
@@ -25,11 +27,7 @@ class AreaAPIView(APIView):
             }
             data_list.append(a_dict)
 
-        return Response({
-            "errmsg": '获取成功',
-            "errno": RET.OK,
-            "data": data_list
-        })
+        return Response({"errmsg": '获取成功', "errno": RET.OK, "data": data_list})
 
 
 # 发布房源
@@ -50,6 +48,20 @@ class HouseAPIView(ModelViewSet):
                 'house_id': serializer.data.get('id')
             }
         })
+
+    # 房屋数据搜索
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+
+        paginator = Paginator(queryset,constants.HOUSE_LIST_PAGE_CAPACITY)
+        total_page = paginator.num_pages
+        house_list = []
+        for i in queryset:
+            house = House.to_basic_dict(i)
+            house_list.append(house)
+
+        # serializer = self.get_serializer(queryset, many=True)
+        return Response({'errmsg':'请求成功', 'errno':RET.OK, 'data':{'house':house_list, 'total_page':total_page}})
 
 
 # 上传房源图片
@@ -82,6 +94,31 @@ class HouseListView(APIView):
     def get(self, request):
 
         user = request.user
-        user = House.objects.get(user=user.username)
-        data = House.to_basic_dict(user)
-        return Response({'errmsg':'OK','errno': RET.OK,'data':data })
+        houses = House.objects.filter(user=user)
+        house_list = []
+        for i in houses:
+            data = House.to_basic_dict(i)
+            house_list.append(data)
+        return Response({'errmsg':'OK','errno': RET.OK,'data':house_list})
+
+
+# 首页房屋推荐
+class HouseIndexView(APIView):
+
+    def get(self,request):
+        houses = House.objects.all()
+        house_list = []
+        for i in houses:
+            house = House.to_basic_dict(i)
+            house_list.append(house)
+        return Response({'errmsg':'OK', 'errno':RET.OK, 'data':house_list})
+
+
+# 房屋详情页面
+class HouseDetailView(APIView):
+
+    def get(self, request, house_id):
+
+        house = House.objects.get(id=house_id)
+        detail_list = House.to_full_dict(house)
+        return Response({'errmsg':'OK', 'errno':RET.OK, 'data':{'house':detail_list, 'user_id':house.user_id}})
