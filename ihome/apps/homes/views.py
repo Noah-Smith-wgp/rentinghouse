@@ -35,6 +35,7 @@ class HouseAPIView(ModelViewSet):
 
     serializer_class = HouseSerializer
     queryset = House.objects.all()
+    # pagination_class = PageNum
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -51,17 +52,32 @@ class HouseAPIView(ModelViewSet):
 
     # 房屋数据搜索
     def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
+        page = request.query_params.get('p')
+        sort_key = request.query_params.get('sk')
+        # 查询数据
+        if sort_key == "booking":
+            # 订单量从高到低
+            houses = House.objects.all().order_by("-order_count")
+        elif sort_key == "price-inc":
+            # 价格从低到高
+            houses = House.objects.all().order_by("price")
+        elif sort_key == "price-des":
+            # 价格从高到低
+            houses = House.objects.all().order_by("-price")
+        else:
+            # 默认以最新的排序
+            houses = House.objects.all().order_by("-create_time")
+        # queryset = self.get_queryset()
 
-        paginator = Paginator(queryset,constants.HOUSE_LIST_PAGE_CAPACITY)
+        paginator = Paginator(houses, constants.HOUSE_LIST_PAGE_CAPACITY)
+        page_houses = paginator.page(page)
         total_page = paginator.num_pages
         house_list = []
-        for i in queryset:
+        for i in page_houses:
             house = House.to_basic_dict(i)
             house_list.append(house)
 
-        # serializer = self.get_serializer(queryset, many=True)
-        return Response({'errmsg':'请求成功', 'errno':RET.OK, 'data':{'house':house_list, 'total_page':total_page}})
+        return Response({'errmsg': '请求成功', 'errno': RET.OK, 'data': {'house': house_list, 'total_page': total_page}})
 
 
 # 上传房源图片
@@ -80,10 +96,10 @@ class HouseImageView(ModelViewSet):
         HouseImage.objects.create(house_id=house_id, url=key)
 
         return Response({
-            'errmsg':'图片上传成功',
-            'errno':RET.OK,
-            'data':{
-                'url':settings.QINIU_URL + key
+            'errmsg': '图片上传成功',
+            'errno': RET.OK,
+            'data': {
+                'url': settings.QINIU_URL + key
             }
         })
 
@@ -99,19 +115,19 @@ class HouseListView(APIView):
         for i in houses:
             data = House.to_basic_dict(i)
             house_list.append(data)
-        return Response({'errmsg':'OK','errno': RET.OK,'data':house_list})
+        return Response({'errmsg': 'OK', 'errno': RET.OK, 'data': {'houses': house_list}})
 
 
 # 首页房屋推荐
 class HouseIndexView(APIView):
 
-    def get(self,request):
+    def get(self, request):
         houses = House.objects.all()
         house_list = []
         for i in houses:
             house = House.to_basic_dict(i)
             house_list.append(house)
-        return Response({'errmsg':'OK', 'errno':RET.OK, 'data':house_list})
+        return Response({'errmsg': 'OK', 'errno': RET.OK, 'data': house_list})
 
 
 # 房屋详情页面
@@ -121,4 +137,4 @@ class HouseDetailView(APIView):
 
         house = House.objects.get(id=house_id)
         detail_list = House.to_full_dict(house)
-        return Response({'errmsg':'OK', 'errno':RET.OK, 'data':{'house':detail_list, 'user_id':house.user_id}})
+        return Response({'errmsg': 'OK', 'errno': RET.OK, 'data': {'house': detail_list, 'user_id': house.user_id}})
