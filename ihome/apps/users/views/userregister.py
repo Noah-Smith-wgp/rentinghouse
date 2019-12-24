@@ -13,7 +13,7 @@ from apps.users.models import User
 from apps.users.serializers import UserInfoSerializer
 
 
-class UserRegister(View):
+class UserRegisterView(View):
     def post(self, request):
         json_dict = json.loads(request.body.decode())
         phonecode = json_dict.get('phonecode')

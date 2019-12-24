@@ -11,7 +11,7 @@ from apps.users.serializers import UserInfoSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-class UserLogin(View):
+class UserLoginView(View):
     def get(self, request):
         user = request.user
         if not user.is_authenticated:

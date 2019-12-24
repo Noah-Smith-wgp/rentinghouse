@@ -13,9 +13,12 @@ from rest_framework.generics import RetrieveAPIView
 
 from apps.users.models import User
 from apps.users.serializers import UserInfoSerializer
+import logging
+
+log = logging.getLogger('django')
 
 
-class UserCenter(APIView):
+class UserCenterView(APIView):
     def get(self, request):
         user = request.user
         user_list = User.objects.get(id=user.id)
@@ -23,7 +26,7 @@ class UserCenter(APIView):
         return Response({'errmsg': 'OK', 'errno': '0', 'data': data})
 
 
-class UserImage(View):
+class UserImageView(View):
     def post(self, request):
         avatar = request.FILES.get('avatar').read()
         username = request.user
@@ -35,7 +38,10 @@ class UserImage(View):
         url = ret.get('key')
         if ret is not None:
             print('All is OK')
-            User.objects.filter(username=str(username)).update(avatar=url)
+            try:
+                User.objects.filter(username=str(username)).update(avatar=url)
+            except Exception as e:
+                log.error(e)
         else:
             print(info)
         data = {
@@ -44,9 +50,25 @@ class UserImage(View):
         return JsonResponse({"data": data, "errno": "0", "errmsg": "头像上传成功"})
 
 
-class UserName(View):
+class UserNameView(View):
     def put(self, request):
         name = json.loads(request.body.decode())
         username = request.user
-        User.objects.filter(username=str(username)).update(username=name.get("name"))
+        try:
+            User.objects.filter(username=str(username)).update(username=name.get("name"))
+        except Exception as e:
+            log.error(e)
         return JsonResponse({"errno": "0", "errmsg": "修改成功"})
+
+
+class UserAuthView(View):
+    def post(self, request):
+        data = json.loads(request.body.decode())
+        real_name = data.get('real_name')
+        id_card = data.get('id_card')
+        user = request.user
+        try:
+            User.objects.filter(username=user.username).update(id_card=id_card, real_name=real_name)
+        except Exception as e:
+            log.error(e)
+        return JsonResponse({"errno": "0", "errmsg": "认证信息保存成功"})
