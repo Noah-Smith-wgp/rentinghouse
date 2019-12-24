@@ -30,3 +30,16 @@ class HouseImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = HouseImage
         fields = '__all__'
+
+
+# 首页房屋推荐
+# class HouseIndexSerializer(serializers.ModelSerializer):
+#
+#     # user = serializers.StringRelatedField()
+#     # area = serializers.StringRelatedField()
+#     # user_id = serializers.IntegerField()
+#     # area_id = serializers.IntegerField()
+#
+#     class Meta:
+#         model = House
+#         fields = ['house_id', 'img_url', 'title']

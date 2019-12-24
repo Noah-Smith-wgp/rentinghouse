@@ -83,7 +83,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -254,9 +254,9 @@ QINIU_BUCKET_NAME = 'tbdzufang'
 
 ######################################七牛云#######################################3
 # 头像获取地址
-QINIU_URL = 'http://q1txbc591.bkt.clouddn.com/'
+# QINIU_URL = 'http://q1txbc591.bkt.clouddn.com/'
 # Access Key 和 Secret Key
 
-ACCESS_KEY = '_D6eQO-oyJ_uNC0873yUrG4AKMER0rmUgQtlFKWA'
-SECRET_KEYS = 'iJFuRzep_VsRdCI1ZbAfh1fEv9wA_CBe4cVKnxuh'
-BUCKET_NAME = 'mourner'
+# QINIU_ACCESS_KEY = '_D6eQO-oyJ_uNC0873yUrG4AKMER0rmUgQtlFKWA'
+# QINIU_SECRET_KEY = 'iJFuRzep_VsRdCI1ZbAfh1fEv9wA_CBe4cVKnxuh'
+# QINIU_BUCKET_NAME = 'mourner'

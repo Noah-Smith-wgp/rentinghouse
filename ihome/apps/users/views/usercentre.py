@@ -62,6 +62,16 @@ class UserNameView(View):
 
 
 class UserAuthView(View):
+
+    def get(self, request):
+        user = request.user
+        try:
+            user = User.objects.get(username=user.username)
+        except Exception as e:
+            log.error(e)
+        data = User.to_auth_dict(user)
+        return JsonResponse({"errno": "0", "errmsg": "OK", "data": data})
+
     def post(self, request):
         data = json.loads(request.body.decode())
         real_name = data.get('real_name')
