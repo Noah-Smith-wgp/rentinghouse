@@ -12,6 +12,14 @@ class OrderInfo(ModelViewSet):
     serializer_class = OrderInfoSerializer
     queryset = Order.objects.all().order_by('-begin_date')
 
+    def get_queryset(self):
+
+        role = self.request.query_params.get('role')
+        if role == 'custom':
+            return Order.objects.filter(with_landlord=Order.LANDLORD_OR_CUSTOM.get('CUSTOM')).order_by('-begin_date')
+        elif role == 'landlord':
+            return Order.objects.filter(with_landlord=Order.LANDLORD_OR_CUSTOM.get('LANDLORD')).order_by('-begin_date')
+
     def list(self, request, *args, **kwargs):
         """订单列表"""
 
@@ -38,7 +46,17 @@ class OrderInfo(ModelViewSet):
         data['house_price'] = 289
         data['days'] = (datetime.datetime.strptime(request.data.get('end_date'), '%Y-%m-%d') - datetime.datetime.strptime(request.data.get('begin_date'), '%Y-%m-%d')).days
         data['amount'] = data['house_price'] * data['days']
+        data['owner'] = 2
+        data['with_landlord'] = Order.LANDLORD_OR_CUSTOM.get('CUSTOM')
 
+        # 保存我的订单(租户视角)
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        # 保存客户订单(房东视角)
+        data = serializer.data
+        data['with_landlord'] = Order.LANDLORD_OR_CUSTOM.get('LANDLORD')
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -46,8 +64,7 @@ class OrderInfo(ModelViewSet):
         return Response({
             'data': {'order_id': serializer.data.get('id')},
             'errno': '0',
-            'errmsg': '下单成功',
-
+            'errmsg': '下单成功'
         })
 
     @action(methods=['put'], detail=True)
@@ -56,14 +73,14 @@ class OrderInfo(ModelViewSet):
 
         order = self.get_object()
         if request.data.get('action') == 'accept':
-            order.status = Order.ORDER_STATUS.get('WAIT_ACCEPT')
+            order.status = Order.ORDER_STATUS_ENUM.get('WAIT_ACCEPT')
             order.save()
             return Response({
                 "errno": "0",
                 "errmsg": "操作成功"
             })
         elif request.data.get('action') == 'reject':
-            order.status = Order.ORDER_STATUS.get('REJECTED')
+            order.status = Order.ORDER_STATUS_ENUM.get('REJECTED')
             order.comment = request.data.get('reason')
             order.save()
             return Response({
