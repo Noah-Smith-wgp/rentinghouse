@@ -260,3 +260,13 @@ QINIU_URL = 'http://q1txbc591.bkt.clouddn.com/'
 QINIU_ACCESS_KEY = '_D6eQO-oyJ_uNC0873yUrG4AKMER0rmUgQtlFKWA'
 QINIU_SECRET_KEY = 'iJFuRzep_VsRdCI1ZbAfh1fEv9wA_CBe4cVKnxuh'
 QINIU_BUCKET_NAME = 'mourner'
+
+# DRF框架配置
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'utils.session.CustomeSessionAuthentication',  # 重写session认证方法,避免强制进行Csrf验证
+        # 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+}

@@ -30,10 +30,10 @@ class UserImageView(View):
     def post(self, request):
         avatar = request.FILES.get('avatar').read()
         username = request.user
-        q = qiniu.Auth(access_key=settings.ACCESS_KEY, secret_key=settings.SECRET_KEYS)
+        q = qiniu.Auth(access_key=settings.QINIU_ACCESS_KEY, secret_key=settings.QINIU_SECRET_KEY)
         num = '%06d' % random.randint(0, 999999)
         key = str(username) + str(num)
-        token = q.upload_token(bucket=settings.BUCKET_NAME)
+        token = q.upload_token(bucket=settings.QINIU_BUCKET_NAME)
         ret, info = qiniu.put_data(token, key, avatar)
         url = ret.get('key')
         if ret is not None:

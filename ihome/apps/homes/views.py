@@ -1,4 +1,5 @@
 from django.core.paginator import Paginator
+from django.utils.decorators import method_decorator
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -7,6 +8,7 @@ from django.conf import settings
 from apps.homes.models import Area, House, HouseImage
 from apps.homes.serializers import AreaSerializer, HouseSerializer, HouseImageSerializer
 from utils import constants
+from utils.decorators import login_required
 from utils.response_code import RET
 from utils.qiniu import qiniu_upload
 
@@ -37,6 +39,7 @@ class HouseAPIView(ModelViewSet):
     queryset = House.objects.all()
     # pagination_class = PageNum
 
+    @method_decorator(login_required)
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -77,7 +80,7 @@ class HouseAPIView(ModelViewSet):
             house = House.to_basic_dict(i)
             house_list.append(house)
 
-        return Response({'errmsg': '请求成功', 'errno': RET.OK, 'data': {'house': house_list, 'total_page': total_page}})
+        return Response({'errmsg': '请求成功', 'errno': RET.OK, 'data': {'houses': house_list, 'total_page': total_page}})
 
 
 # 上传房源图片
@@ -86,6 +89,7 @@ class HouseImageView(ModelViewSet):
     serializer_class = HouseImageSerializer
     queryset = HouseImage.objects.all()
 
+    @method_decorator(login_required)
     def create(self, request, *args, **kwargs):
         image = request.FILES.get('house_image')
         house_id = kwargs.get('house_id')
@@ -107,6 +111,7 @@ class HouseImageView(ModelViewSet):
 # 我的房屋列表
 class HouseListView(APIView):
 
+    @method_decorator(login_required)
     def get(self, request):
 
         user = request.user
