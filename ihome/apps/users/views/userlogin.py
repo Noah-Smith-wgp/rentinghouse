@@ -1,11 +1,11 @@
 import json
 
 from django import http
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.views import View
-
+from utils.check_account import UsernameMobileAuthBackend
 from apps.users.models import User
 from apps.users.serializers import UserInfoSerializer
 from rest_framework.views import APIView
@@ -29,7 +29,7 @@ class UserLogin(View):
         data = serializers.data
         mobile = data.get('mobile')
         password = data.get('password')
-        user = authenticate(username=mobile, password=password)
+        user = UsernameMobileAuthBackend.authenticate(username=mobile, password=password)
         if user is None:
             return http.HttpResponseForbidden('账号或密码错误')
         login(request, user)

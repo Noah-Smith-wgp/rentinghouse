@@ -23,7 +23,7 @@ def get_user_by_account(account):
 class UsernameMobileAuthBackend(ModelBackend):
     """自定义用户认证后端"""
 
-    def authenticate(self, request, username=None, password=None, **kwargs):
+    def authenticate(username=None, password=None, **kwargs):
         user = get_user_by_account(username)
         # 校验user是否存在并校验密码是否正确
         if user and user.check_password(password):
