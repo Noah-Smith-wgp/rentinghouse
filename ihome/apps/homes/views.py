@@ -145,4 +145,4 @@ class HouseDetailView(APIView):
 
         house = House.objects.get(id=house_id)
         detail_list = House.to_full_dict(house)
-        return Response({'errmsg': 'OK', 'errno': RET.OK, 'data': {'house': detail_list, 'user_id': house.user_id}})
+        return Response({'errmsg': 'OK', 'errno': RET.OK, 'data': {'house': detail_list, 'user_id': request.user.id}})
