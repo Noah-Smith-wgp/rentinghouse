@@ -8,7 +8,7 @@ from utils.model import BaseModel
 class Order(BaseModel):
     """订单"""
 
-    ORDER_STATUS_ENUM = {
+    ORDER_STATUS = {
         "WAIT_ACCEPT": 0,  # 待接单,
         "WAIT_PAYMENT": 1,  # 待支付
         "PAID": 2,  # 已支付
@@ -28,16 +28,6 @@ class Order(BaseModel):
             (6, "已拒单")  # 已拒单
         )
 
-    LANDLORD_OR_CUSTOM = {
-        'CUSTOM': 0,  # 房客
-        'LANDLORD': 1  # 房东
-    }
-
-    LANDLORD_OR_CUSTOM_CHOICES = (
-        (0, '房客'),  # 房客
-        (1, '房东'),  # 房东
-    )
-
     user = models.ForeignKey("users.User", related_name="orders", on_delete=models.CASCADE, verbose_name="下订单的用户编号")
     house = models.ForeignKey("homes.House", on_delete=models.CASCADE, verbose_name="预订的房间编号")
     begin_date = models.DateField(null=False, verbose_name="预订的起始时间")
@@ -47,8 +37,6 @@ class Order(BaseModel):
     amount = models.IntegerField(null=False, verbose_name="订单总金额")
     status = models.SmallIntegerField(choices=ORDER_STATUS_CHOICES, default=0, db_index=True, verbose_name="订单状态")
     comment = models.TextField(null=True, verbose_name="订单的评论信息或者拒单原因")
-    # owner = models.ForeignKey('users.User', on_delete=models.CASCADE, verbose_name='被预订房间的房东编号')
-    # with_landlord = models.SmallIntegerField(choices=LANDLORD_OR_CUSTOM_CHOICES, default=0, verbose_name='是否以房东身份访问订单')
 
     class Meta:
         db_table = "tb_order"
