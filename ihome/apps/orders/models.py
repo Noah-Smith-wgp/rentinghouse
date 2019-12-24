@@ -52,7 +52,7 @@ class Order(BaseModel):
             "ctime": self.create_time.strftime("%Y-%m-%d %H:%M"),
             "days": self.days,
             "amount": self.amount,
-            "status": Order.ORDER_STATUS_ENUM[self.status],
+            "status": Order.ORDER_STATUS[self.status],
             "comment": self.comment if self.comment else ""
         }
         return order_dict
