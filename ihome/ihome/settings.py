@@ -251,3 +251,12 @@ QINIU_SECRET_KEY = 'lG_4_tI8bJTR8Zk6z8fGwYp79aQHkJgolvvBL_qm'
 
 # 要上传的空间
 QINIU_BUCKET_NAME = 'tbdzufang'
+
+######################################七牛云#######################################3
+# 头像获取地址
+QINIU_URL = 'http://q1txbc591.bkt.clouddn.com/'
+# Access Key 和 Secret Key
+
+ACCESS_KEY = '_D6eQO-oyJ_uNC0873yUrG4AKMER0rmUgQtlFKWA'
+SECRET_KEYS = 'iJFuRzep_VsRdCI1ZbAfh1fEv9wA_CBe4cVKnxuh'
+BUCKET_NAME = 'mourner'
