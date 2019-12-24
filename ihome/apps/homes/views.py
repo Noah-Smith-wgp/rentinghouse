@@ -37,11 +37,13 @@ class HouseAPIView(ModelViewSet):
 
     serializer_class = HouseSerializer
     queryset = House.objects.all()
-    # pagination_class = PageNum
 
     @method_decorator(login_required)
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        user = request.user
+        data = request.data
+        data['user_id'] = user.id
+        serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
@@ -70,7 +72,6 @@ class HouseAPIView(ModelViewSet):
         else:
             # 默认以最新的排序
             houses = House.objects.all().order_by("-create_time")
-        # queryset = self.get_queryset()
 
         paginator = Paginator(houses, constants.HOUSE_LIST_PAGE_CAPACITY)
         page_houses = paginator.page(page)
