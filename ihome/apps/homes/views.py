@@ -129,8 +129,10 @@ class HouseIndexView(APIView):
 
     def get(self, request):
         houses = House.objects.all()
+        paginator = Paginator(houses, constants.HOME_PAGE_MAX_HOUSES)
+        page_houses = paginator.page(1)
         house_list = []
-        for i in houses:
+        for i in page_houses:
             house = House.to_basic_dict(i)
             house_list.append(house)
         return Response({'errmsg': 'OK', 'errno': RET.OK, 'data': house_list})
