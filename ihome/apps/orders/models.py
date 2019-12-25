@@ -18,14 +18,23 @@ class Order(BaseModel):
         "REJECTED": 6  # 已拒单
     }
 
+    ORDER_STATUS_ENUM = {
+        0: "WAIT_ACCEPT",  # 待接单,
+        1: "WAIT_PAYMENT",  # 待支付
+        2: "PAID",  # 已支付
+        3: "WAIT_COMMENT",  # 待评价
+        4: "COMPLETE",  # 已完成
+        5: "CANCELED",  # 已取消
+        6: "REJECTED"  # 已拒单
+    }
     ORDER_STATUS_CHOICES = (
-            (0, "待接单"),  # 待接单,
-            (1, "待支付"),  # 待支付
-            (2, "已支付"),  # 已支付
-            (3, "待评价"),  # 待评价
-            (4, "已完成"),  # 已完成
-            (5, "已取消"),  # 已取消
-            (6, "已拒单")  # 已拒单
+            (0 ,"WAIT_ACCEPT"),  # 待接单,
+            (1, "WAIT_PAYMENT"),  # 待支付
+            (2, "PAID"),  # 已支付
+            (3, "WAIT_COMMENT"),  # 待评价
+            (4, "COMPLETE"),  # 已完成
+            (5, "CANCELED"),  # 已取消
+            (6, "REJECTED")  # 已拒单
         )
 
     user = models.ForeignKey("users.User", related_name="orders", on_delete=models.CASCADE, verbose_name="下订单的用户编号")
@@ -52,7 +61,7 @@ class Order(BaseModel):
             "ctime": self.create_time.strftime("%Y-%m-%d %H:%M"),
             "days": self.days,
             "amount": self.amount,
-            "status": Order.ORDER_STATUS[self.status],
+            "status": Order.ORDER_STATUS_ENUM[self.status],
             "comment": self.comment if self.comment else ""
         }
         return order_dict

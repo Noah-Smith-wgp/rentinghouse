@@ -26,15 +26,14 @@ class OrderInfo(ModelViewSet):
     def list(self, request, *args, **kwargs):
         """订单列表"""
 
-        queryset = self.filter_queryset(self.get_queryset())
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
+        user = request.user
+        orders = Order.objects.filter(user_id=user.id)
+        order_list = []
+        for i in orders:
+            order = Order.to_dict(i)
+            order_list.append(order)
         return Response({
-            'data': {'orders': serializer.data},
+            'data': {'orders': order_list},
             'errno': '0',
             'errmsg': 'OK',
 
@@ -50,6 +49,7 @@ class OrderInfo(ModelViewSet):
         start_date = data.get('start_date')
         end_date = data.get('end_date')
         data['begin_date'] = start_date
+
         data['house_price'] = House.objects.get(id=house_id).price
         data['days'] = (datetime.datetime.strptime(end_date, '%Y-%m-%d') - datetime.datetime.strptime(start_date, '%Y-%m-%d')).days
         data['amount'] = data['house_price'] * data['days']
