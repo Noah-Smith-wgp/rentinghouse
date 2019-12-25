@@ -11,6 +11,7 @@ from apps.orders.serializers import OrderInfoSerializer
 class OrderInfo(ModelViewSet):
 
     serializer_class = OrderInfoSerializer
+    lookup_field = ['order_id']
 
     def get_queryset(self):
 
@@ -26,8 +27,7 @@ class OrderInfo(ModelViewSet):
     def list(self, request, *args, **kwargs):
         """订单列表"""
 
-        user = request.user
-        orders = Order.objects.filter(user_id=user.id)
+        orders = self.filter_queryset(self.get_queryset())
         order_list = []
         for i in orders:
             order = Order.to_dict(i)
@@ -65,12 +65,13 @@ class OrderInfo(ModelViewSet):
         })
 
     @action(methods=['put'], detail=True)
-    def accept_order(self, request, pk=None):
+    def accept_order(self, request, order_id):
         """接收订单/拒绝订单"""
 
-        order = self.get_object()
+        # order = self.get_object()
+        order=Order.objects.get(id=order_id)
         if request.data.get('action') == 'accept':
-            order.status = Order.ORDER_STATUS.get('WAIT_ACCEPT')
+            order.status = Order.ORDER_STATUS.get('WAIT_COMMENT')
             order.save()
             return Response({
                 "errno": "0",
@@ -86,17 +87,13 @@ class OrderInfo(ModelViewSet):
             })
 
     @action(methods=['put'], detail=True)
-    def set_comment(self, request, pk=None):
+    def set_comment(self, request, order_id):
         """评论"""
 
-        order = self.get_object()
-        serializer = OrderInfoSerializer(data=request.data)
-        if not serializer.is_valid():
-            return Response({
-                "errno": "1",
-                "errmsg": "操作失败"
-            })
-        order.comment = serializer.data.get('comment')
+        # order = self.get_object()
+        order = Order.objects.get(id=order_id)
+        order.comment = request.data.get('comment')
+        order.status = Order.ORDER_STATUS.get('COMPLETE')
         order.save()
         return Response({
             "errno": "0",
