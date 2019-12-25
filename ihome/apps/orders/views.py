@@ -44,10 +44,14 @@ class OrderInfo(ModelViewSet):
         """添加订单"""
 
         data = request.data
+        data['user_id'] = request.user.id
         data['user'] = request.user
-        # data['user'] = 1
-        data['house_price'] = 289
-        data['days'] = (datetime.datetime.strptime(request.data.get('end_date'), '%Y-%m-%d') - datetime.datetime.strptime(request.data.get('begin_date'), '%Y-%m-%d')).days
+        house_id = data.get('house_id')
+        start_date = data.get('start_date')
+        end_date = data.get('end_date')
+        data['begin_date'] = start_date
+        data['house_price'] = House.objects.get(id=house_id).price
+        data['days'] = (datetime.datetime.strptime(end_date, '%Y-%m-%d') - datetime.datetime.strptime(start_date, '%Y-%m-%d')).days
         data['amount'] = data['house_price'] * data['days']
 
         serializer = self.get_serializer(data=data)
