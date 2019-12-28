@@ -1,18 +1,16 @@
 import json
 import random
 import re
-
 from django import http
-from django.shortcuts import render
-
-# Create your views here.
 from django.views import View
 from django_redis import get_redis_connection
 
 from apps.verifications.libs.captcha.captcha import captcha
 from apps.verifications.txyun.sms_txy import Sms_txy
+# Create your views here.
 
 
+# 图形验证
 class UserImagesCode(View):
     def get(self, request):
         cur = request.GET.get('cur')
@@ -26,6 +24,7 @@ class UserImagesCode(View):
         return http.HttpResponse(image, content_type='image/jpg')
 
 
+# 短信验证
 class SmsCode(View):
     def post(self, request):
         data_dict = json.loads(request.body.decode())

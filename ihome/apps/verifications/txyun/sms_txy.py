@@ -1,6 +1,7 @@
 from qcloudsms_py import QcloudSms
 
-def Sms_txy(mobile,datas):
+
+def Sms_txy(mobile, datas):
     # 短信应用 SDK AppID
     appid = 1400289689
     # 短信应用 SDK AppKey
@@ -18,5 +19,4 @@ def Sms_txy(mobile,datas):
     # 创建对象
     ssender = qcloudsms.SmsSingleSender()
     # 发送短信
-    ssender.send_with_param(86, phone_numbers[0],template_id, params, sign=sms_sign, extend="", ext="")
-
+    ssender.send_with_param(86, phone_numbers[0], template_id, params, sign=sms_sign, extend="", ext="")

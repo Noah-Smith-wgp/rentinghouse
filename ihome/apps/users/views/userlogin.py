@@ -1,16 +1,13 @@
 import json
-
 from django import http
 from django.contrib.auth import login, logout
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.views import View
 from utils.check_account import UsernameMobileAuthBackend
-from apps.users.models import User
 from apps.users.serializers import UserInfoSerializer
-from rest_framework.views import APIView
-from rest_framework.response import Response
 
+
+# 登录
 class UserLoginView(View):
     def get(self, request):
         user = request.user

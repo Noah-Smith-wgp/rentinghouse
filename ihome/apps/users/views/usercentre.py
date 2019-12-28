@@ -1,23 +1,18 @@
 import json
-import random
-
-import qiniu
 from django.conf import settings
 from django.http import *
 from django.views import View
-from rest_framework.mixins import RetrieveModelMixin
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.generics import RetrieveAPIView
+import logging
 
 from apps.users.models import User
-from apps.users.serializers import UserInfoSerializer
-import logging
+from utils.qiniu import qiniu_upload
 
 log = logging.getLogger('django')
 
 
+# 展示个人中心
 class UserCenterView(APIView):
     def get(self, request):
         user = request.user
@@ -26,30 +21,25 @@ class UserCenterView(APIView):
         return Response({'errmsg': 'OK', 'errno': '0', 'data': data})
 
 
+# 上传头像
 class UserImageView(View):
     def post(self, request):
         avatar = request.FILES.get('avatar').read()
         username = request.user
-        q = qiniu.Auth(access_key=settings.QINIU_ACCESS_KEY, secret_key=settings.QINIU_SECRET_KEY)
-        num = '%06d' % random.randint(0, 999999)
-        key = str(username) + str(num)
-        token = q.upload_token(bucket=settings.QINIU_BUCKET_NAME)
-        ret, info = qiniu.put_data(token, key, avatar)
-        url = ret.get('key')
-        if ret is not None:
-            print('All is OK')
-            try:
-                User.objects.filter(username=str(username)).update(avatar=url)
-            except Exception as e:
-                log.error(e)
-        else:
-            print(info)
+
+        url = qiniu_upload(avatar)
+        try:
+            User.objects.filter(username=str(username)).update(avatar=url)
+        except Exception as e:
+            log.error(e)
+
         data = {
             "avatar_url": settings.QINIU_URL + url
         }
         return JsonResponse({"data": data, "errno": "0", "errmsg": "头像上传成功"})
 
 
+# 用户名修改
 class UserNameView(View):
     def put(self, request):
         name = json.loads(request.body.decode())
@@ -61,8 +51,9 @@ class UserNameView(View):
         return JsonResponse({"errno": "0", "errmsg": "修改成功"})
 
 
+# 实名认证
 class UserAuthView(View):
-
+    # 获取认证信息
     def get(self, request):
         user = request.user
         try:
