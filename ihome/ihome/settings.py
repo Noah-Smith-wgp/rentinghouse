@@ -22,41 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'ub78h1hc=f-1=37cj&n+$)9upz9_#!lwej*tnameb=hmp&xa3&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ["*"]
-
-CORS_ALLOW_CREDENTIALS = True
-# CORS_ORIGIN_ALLOW_ALL = True
-CORS_ORIGIN_WHITELIST = (
-    'http://127.0.0.1:8080',
-    'http://127.0.0.1:8000',
-)
-
-CORS_ALLOW_METHODS = (
-    'DELETE',
-    'GET',
-    'OPTIONS',
-    'PATCH',
-    'POST',
-    'PUT',
-    'VIEW',
-)
-
-CORS_ALLOW_HEADERS = (
-    'XMLHttpRequest',
-    'X_FILENAME',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-    'Pragma',
-)
-
+DEBUG = False
 
 # Application definition
 
@@ -127,28 +93,28 @@ DATABASES = {
 CACHES = {
     "default": {  # 默认
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://49.232.164.126:6379/0",
+        "LOCATION": "redis://127.0.0.1:6379/0",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
     "session": {  # session
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://49.232.164.126:6379/1",
+        "LOCATION": "redis://127.0.0.1:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
     "verify_code": {  # 验证码
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://49.232.164.126:6379/2",
+        "LOCATION": "redis://127.0.0.1:6379/2",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
     "house_cache": {  # 缓存房间数据
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://49.232.164.126:6379/3",
+        "LOCATION": "redis://127.0.0.1:6379/3",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -242,24 +208,51 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 # 添加用户认证登录
 AUTHENTICATION_BACKENDS = ['utils.check_account.UsernameMobileAuthBackend']
 
-# 七牛云
-# QINIU_URL= "http://pzjstxvsp.bkt.clouddn.com/"
-#
-# # Access Key 和 Secret Key
-# QINIU_ACCESS_KEY = 'q9crPZPROOXrykaH85q_zpEEll0f_LsjXwUnXHRo'
-# QINIU_SECRET_KEY = 'lG_4_tI8bJTR8Zk6z8fGwYp79aQHkJgolvvBL_qm'
-#
-# # 要上传的空间
-# QINIU_BUCKET_NAME = 'tbdzufang'
 
-######################################七牛云#######################################3
+ALLOWED_HOSTS = ["*"]
+
+CORS_ALLOW_CREDENTIALS = True
+# CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = (
+    # 'http://127.0.0.1:8080',
+    # 'http://127.0.0.1:8000',
+    'http://122.51.161.120:8000',
+    'http://122.51.161.120:8002',
+)
+
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+    'VIEW',
+)
+
+CORS_ALLOW_HEADERS = (
+    'XMLHttpRequest',
+    'X_FILENAME',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'Pragma',
+)
+
+
+# 七牛云
 # 头像获取地址
-QINIU_URL = 'http://q1txbc591.bkt.clouddn.com/'
+QINIU_URL = 'http://q43s6fh2h.bkt.clouddn.com/'
 # Access Key 和 Secret Key
 
-QINIU_ACCESS_KEY = '_D6eQO-oyJ_uNC0873yUrG4AKMER0rmUgQtlFKWA'
-QINIU_SECRET_KEY = 'iJFuRzep_VsRdCI1ZbAfh1fEv9wA_CBe4cVKnxuh'
-QINIU_BUCKET_NAME = 'mourner'
+QINIU_ACCESS_KEY = 'hjL-pqbOr_9UrGQPc3G8F2OKRDp5UJ87VxgEkdSo'
+QINIU_SECRET_KEY = 'eT7GGmP0t9xE-yuzmdSoASonmPMz8qJb7kpBwBCL'
+QINIU_BUCKET_NAME = 'noah-smith'
 
 # DRF框架配置
 REST_FRAMEWORK = {
